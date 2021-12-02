@@ -2,9 +2,13 @@ using System;
 
 namespace api_catalogo.models
 {
-    public class Category
+  public class Category
+  {
+    public Category()
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+      Id = new Guid();
     }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+  }
 }

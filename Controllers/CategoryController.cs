@@ -27,7 +27,7 @@ namespace api_catalogo.Controllers
       return _categoryService.Add(category);
     }
 
-    [HttpPut("/{id}")]
+    [HttpPut("{id}")]
     public string UpdateCategory()
     {
       return _categoryService.Update();

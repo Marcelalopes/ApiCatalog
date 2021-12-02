@@ -26,7 +26,7 @@ namespace api_catalogo.Controllers
       return _productService.Add(p);
     }
 
-    [HttpPut("/{id}")]
+    [HttpPut("{id}")]
     public string UpdateProduct()
     {
       return _productService.Update();
