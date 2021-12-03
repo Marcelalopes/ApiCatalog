@@ -28,11 +28,16 @@ namespace api_catalogo
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddDbContextPool<AppDbContext>(options =>
+      /* services.AddDbContextPool<AppDbContext>(options =>
         options.UseMySql("conexaoMySQL", ServerVersion.AutoDetect(
             Configuration.GetConnectionString("conexaoMySQL")
         ))
-      );
+      ); */
+      string connection = Configuration.GetConnectionString("conexaoMySQL");
+      services.AddDbContextPool<AppDbContext>(
+        options => options.UseMySql(
+          connection, ServerVersion.AutoDetect(connection)
+        ));
 
       services.AddControllers();
       services.AddSwaggerGen(c =>
