@@ -14,5 +14,6 @@ namespace api_catalogo.models
     public decimal Price { get; set; }
     public int Inventory { get; set; }
     public DateTime RegistrationDate { get; set; }
+    public Category Category { get; set; }
   }
 }
