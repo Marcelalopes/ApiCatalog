@@ -17,7 +17,8 @@ namespace api_catalogo.EntityConfig
           .HasColumnType("varchar(100)")
           .IsRequired();
       builder.HasMany(c => c.Products)
-          .WithOne(p => p.Category);
+          .WithOne(p => p.Category)
+          .IsRequired();
     }
   }
 }
