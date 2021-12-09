@@ -1,27 +1,76 @@
+using System;
 using api_catalogo.models;
+using System.Collections.Generic;
+using System.Linq;
+using api_catalogo.Dtos;
+using api_catalogo.Repository.Interfaces;
 
 namespace api_catalogo.service
 {
-  public class ProductService
+  public class ProductService : IProductService
   {
-    public string GetAll()
+    private readonly IProductRepository _productRepository;
+
+    public ProductService(IProductRepository productRepository)
     {
-      return "Todas os Produtos";
+      _productRepository = productRepository;
+    }
+    public IEnumerable<ProductsDto> GetAll()
+    {
+      var result = _productRepository.GetAll().ToList();
+
+      List<ProductsDto> listResult = new List<ProductsDto>();
+      foreach (var product in result)
+      {
+        listResult.Add(new ProductsDto()
+        {
+          Id = product.Id,
+          Nome = product.Name,
+          Description = product.Description,
+          Price = product.Price,
+          Inventory = product.Inventory,
+          RegistrationDate = product.RegistrationDate,
+          CategoryId = product.CategoryId
+        });
+      }
+      return listResult;
     }
 
-    public Product Add(Product p)
+    public ProductNewDto Add(ProductNewDto newProduct)
     {
-      return p;
+      Product product = new Product()
+      {
+        Name = newProduct.Nome,
+        Description = newProduct.Description,
+        Price = newProduct.Price,
+        Inventory = newProduct.Inventory,
+        RegistrationDate = newProduct.RegistrationDate,
+        CategoryId = newProduct.CategoryId
+      };
+
+      _productRepository.add(product);
+      return newProduct;
     }
 
-    public string Update()
+    public void Update(ProductsDto updateProduct)
     {
-      return "Atualizar Produtos";
+      Product product = new Product()
+      {
+        Id = updateProduct.Id,
+        Name = updateProduct.Nome,
+        Description = updateProduct.Description,
+        Price = updateProduct.Price,
+        Inventory = updateProduct.Inventory,
+        RegistrationDate = updateProduct.RegistrationDate,
+        CategoryId = updateProduct.CategoryId
+      };
+
+      _productRepository.Update(product);
     }
 
-    public string Delete()
+    public Boolean Delete(Guid id)
     {
-      return "Deletar Produtos";
+      return _productRepository.Delete(id);
     }
   }
 }

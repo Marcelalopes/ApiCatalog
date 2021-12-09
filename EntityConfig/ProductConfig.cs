@@ -14,20 +14,24 @@ namespace api_catalogo.EntityConfig
           .HasName("Pk_ProductId");
 
       builder.Property(prop => prop.Name)
-          .HasColumnType("varchar(100)")
+          .HasColumnType("varchar(80)")
           .IsRequired();
       builder.Property(prop => prop.Description)
           .HasColumnType("varchar(255)")
           .IsRequired();
       builder.Property(prop => prop.Price)
           .HasColumnType("decimal")
-          .HasPrecision(18, 2)
+          .HasPrecision(10, 2)
           .IsRequired();
       builder.Property(prop => prop.Inventory)
           .HasColumnType("int")
           .IsRequired();
       builder.Property(prop => prop.RegistrationDate)
           .HasColumnType("datetime")
+          .IsRequired();
+      builder.HasOne(p => p.Category)
+          .WithMany(c => c.Products)
+          .HasForeignKey(p => p.CategoryId)
           .IsRequired();
     }
   }

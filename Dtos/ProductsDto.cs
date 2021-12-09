@@ -1,20 +1,16 @@
 using System;
+using api_catalogo.models;
 
-namespace api_catalogo.models
+namespace api_catalogo.Dtos
 {
-  public class Product
+  public class ProductsDto
   {
-    public Product()
-    {
-      Id = new Guid();
-    }
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public string Nome { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
     public int Inventory { get; set; }
     public DateTime RegistrationDate { get; set; }
-    public Category Category { get; set; }
     public Guid CategoryId { get; set; }
   }
 }

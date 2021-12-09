@@ -1,6 +1,11 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using api_catalogo.service;
 using api_catalogo.models;
+using System;
+using api_catalogo.Context;
+using System.Collections.Generic;
+using api_catalogo.Dtos;
 
 namespace api_catalogo.Controllers
 {
@@ -8,35 +13,41 @@ namespace api_catalogo.Controllers
   [Route("api/[controller]")]
   public class CategoryController : ControllerBase
   {
-    private readonly CategoryService _categoryService;
+    private readonly ICategoryService _categoryService;
 
-    public CategoryController()
+    public CategoryController(ICategoryService categoryService)
     {
-      _categoryService = new CategoryService();
+      _categoryService = categoryService;
     }
 
     [HttpGet]
-    public string GetAllCategory()
+    public ActionResult<IEnumerable<CategoriesDto>> GetAllCategory()
     {
-      return _categoryService.GetAll();
+      return new ObjectResult(_categoryService.GetAll().ToList());
     }
 
     [HttpPost]
-    public Category AddCategory([FromBody] Category category)
+    public ActionResult<CategoryNewDto> AddCategory([FromBody] CategoryNewDto category)
     {
-      return _categoryService.Add(category);
+      var result = _categoryService.Add(category);
+      return new CreatedResult("", result);
     }
 
-    [HttpPut("{id}")]
-    public string UpdateCategory()
+    [HttpPut("{id}:Guid")]
+    public ActionResult UpdateCategory([FromBody] CategoriesDto category, Guid id)
     {
-      return _categoryService.Update();
+      if (id != category.Id)
+        return new BadRequestResult();
+
+      _categoryService.Update(category);
+      return new OkObjectResult(category);
     }
 
-    [HttpDelete]
-    public string DeleteCategory()
+    [HttpDelete("{id}:Guid")]
+    public ActionResult DeleteCategory(Guid id)
     {
-      return _categoryService.Delete();
+      var result = _categoryService.Delete(id);
+      return result ? new OkResult() : new NotFoundResult();
     }
   }
 }

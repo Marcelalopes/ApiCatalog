@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using api_catalogo.Context;
+using api_catalogo.service;
+using api_catalogo.Repository.Interfaces;
+using api_catalogo.Repository;
 
 namespace api_catalogo
 {
@@ -28,11 +31,6 @@ namespace api_catalogo
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      /* services.AddDbContextPool<AppDbContext>(options =>
-        options.UseMySql("conexaoMySQL", ServerVersion.AutoDetect(
-            Configuration.GetConnectionString("conexaoMySQL")
-        ))
-      ); */
       string connection = Configuration.GetConnectionString("conexaoMySQL");
       services.AddDbContextPool<AppDbContext>(
         options => options.UseMySql(
@@ -44,6 +42,11 @@ namespace api_catalogo
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "api_catalogo", Version = "v1" });
       });
+
+      services.AddScoped<ICategoryService, CategoryService>();
+      services.AddScoped<ICategoryRepository, CategoryRepository>();
+      services.AddScoped<IProductService, ProductService>();
+      services.AddScoped<IProductRepository, ProductRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

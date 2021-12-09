@@ -1,6 +1,11 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using api_catalogo.models;
 using api_catalogo.service;
+using System;
+using api_catalogo.Context;
+using System.Collections.Generic;
+using api_catalogo.Dtos;
 
 namespace api_catalogo.Controllers
 {
@@ -8,34 +13,39 @@ namespace api_catalogo.Controllers
   [Route("api/[controller]")]
   public class ProductController : ControllerBase
   {
-    private readonly ProductService _productService;
-    public ProductController()
+    private readonly IProductService _productService;
+    public ProductController(IProductService productService)
     {
-      _productService = new ProductService();
+      _productService = productService;
     }
 
     [HttpGet]
-    public string GetAllProduct()
+    public ActionResult<IEnumerable<ProductsDto>> GetAllProduct()
     {
-      return _productService.GetAll();
+      return new ObjectResult(_productService.GetAll().ToList());
     }
 
     [HttpPost]
-    public Product AddProduct([FromBody] Product p)
+    public ActionResult<ProductNewDto> AddProduct([FromBody] ProductNewDto p)
     {
-      return _productService.Add(p);
+      var result = _productService.Add(p);
+      return new CreatedResult("", result);
     }
 
-    [HttpPut("{id}")]
-    public string UpdateProduct()
+    [HttpPut("{id}:Guid")]
+    public ActionResult UpdateProduct([FromBody] ProductsDto p, Guid id)
     {
-      return _productService.Update();
+      if (id != p.Id)
+        return new BadRequestResult();
+      _productService.Update(p);
+      return new OkObjectResult(p);
     }
 
-    [HttpDelete]
-    public string DeleteProduct()
+    [HttpDelete("{id}:Guid")]
+    public ActionResult DeleteProduct(Guid id)
     {
-      return _productService.Delete();
+      var result = _productService.Delete(id);
+      return result ? new OkResult() : new NotFoundResult();
     }
   }
 }
