@@ -16,6 +16,7 @@ using api_catalogo.Context;
 using api_catalogo.service;
 using api_catalogo.Repository.Interfaces;
 using api_catalogo.Repository;
+using api_catalogo.config;
 
 namespace api_catalogo
 {
@@ -47,6 +48,8 @@ namespace api_catalogo
       services.AddScoped<ICategoryRepository, CategoryRepository>();
       services.AddScoped<IProductService, ProductService>();
       services.AddScoped<IProductRepository, ProductRepository>();
+
+      services.AddAutoMapper(typeof(AutoMapperProfile));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

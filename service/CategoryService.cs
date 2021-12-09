@@ -4,56 +4,35 @@ using api_catalogo.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using api_catalogo.Dtos;
+using AutoMapper;
 
 namespace api_catalogo.service
 {
   public class CategoryService : ICategoryService
   {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
 
-    public CategoryService(ICategoryRepository categoryRepository)
+    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
     {
       _categoryRepository = categoryRepository;
+      _mapper = mapper;
     }
 
     public IEnumerable<CategoriesDto> GetAll()
     {
-      var result = _categoryRepository.GetAll().ToList();
-
-      List<CategoriesDto> listResult = new List<CategoriesDto>();
-
-      foreach (var category in result)
-      {
-        listResult.Add(new CategoriesDto()
-        {
-          Id = category.Id,
-          Nome = category.Name
-        });
-      }
-
-      return listResult;
+      return _mapper.Map<IEnumerable<CategoriesDto>>(_categoryRepository.GetAll().ToList());
     }
 
     public CategoryNewDto Add(CategoryNewDto newCategory)
     {
-      Category category = new Category()
-      {
-        Name = newCategory.Nome
-      };
-
-      _categoryRepository.add(category);
+      _categoryRepository.add(_mapper.Map<Category>(newCategory));
       return newCategory;
     }
 
     public void Update(CategoriesDto updateCategory)
     {
-      Category category = new Category()
-      {
-        Id = updateCategory.Id,
-        Name = updateCategory.Nome
-      };
-
-      _categoryRepository.Update(category);
+      _categoryRepository.Update(_mapper.Map<Category>(updateCategory));
     }
 
     public Boolean Delete(Guid id)
