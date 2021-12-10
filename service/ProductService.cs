@@ -4,68 +4,34 @@ using System.Collections.Generic;
 using System.Linq;
 using api_catalogo.Dtos;
 using api_catalogo.Repository.Interfaces;
+using AutoMapper;
 
 namespace api_catalogo.service
 {
   public class ProductService : IProductService
   {
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
-    public ProductService(IProductRepository productRepository)
+    public ProductService(IProductRepository productRepository, IMapper mapper)
     {
       _productRepository = productRepository;
+      _mapper = mapper;
     }
     public IEnumerable<ProductsDto> GetAll()
     {
-      var result = _productRepository.GetAll().ToList();
-
-      List<ProductsDto> listResult = new List<ProductsDto>();
-      foreach (var product in result)
-      {
-        listResult.Add(new ProductsDto()
-        {
-          Id = product.Id,
-          Nome = product.Name,
-          Description = product.Description,
-          Price = product.Price,
-          Inventory = product.Inventory,
-          RegistrationDate = product.RegistrationDate,
-          CategoryId = product.CategoryId
-        });
-      }
-      return listResult;
+      return _mapper.Map<IEnumerable<ProductsDto>>(_productRepository.GetAll().ToList());
     }
 
     public ProductNewDto Add(ProductNewDto newProduct)
     {
-      Product product = new Product()
-      {
-        Name = newProduct.Nome,
-        Description = newProduct.Description,
-        Price = newProduct.Price,
-        Inventory = newProduct.Inventory,
-        RegistrationDate = newProduct.RegistrationDate,
-        CategoryId = newProduct.CategoryId
-      };
-
-      _productRepository.add(product);
+      _productRepository.add(_mapper.Map<Product>(newProduct));
       return newProduct;
     }
 
     public void Update(ProductsDto updateProduct)
     {
-      Product product = new Product()
-      {
-        Id = updateProduct.Id,
-        Name = updateProduct.Nome,
-        Description = updateProduct.Description,
-        Price = updateProduct.Price,
-        Inventory = updateProduct.Inventory,
-        RegistrationDate = updateProduct.RegistrationDate,
-        CategoryId = updateProduct.CategoryId
-      };
-
-      _productRepository.Update(product);
+      _productRepository.Update(_mapper.Map<Product>(updateProduct));
     }
 
     public Boolean Delete(Guid id)

@@ -2,7 +2,7 @@ namespace api_catalogo.Dtos
 {
   public class CategoryNewDto
   {
-    public string Nome { get; set; }
+    public string Name { get; set; }
 
   }
 }
