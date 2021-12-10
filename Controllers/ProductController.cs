@@ -1,11 +1,10 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using api_catalogo.models;
 using api_catalogo.service;
 using System;
-using api_catalogo.Context;
 using System.Collections.Generic;
 using api_catalogo.Dtos;
+using System.Threading.Tasks;
 
 namespace api_catalogo.Controllers
 {
@@ -20,15 +19,16 @@ namespace api_catalogo.Controllers
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ProductsDto>> GetAllProduct()
+    public async Task<ActionResult<IEnumerable<ProductsDto>>> GetAllProduct()
     {
-      return new ObjectResult(_productService.GetAll().ToList());
+      var result = await _productService.GetAll();
+      return new ObjectResult(result);
     }
 
     [HttpPost]
-    public ActionResult<ProductNewDto> AddProduct([FromBody] ProductNewDto p)
+    public async Task<ActionResult> AddProduct([FromBody] ProductNewDto p)
     {
-      var result = _productService.Add(p);
+      var result = await _productService.Add(p);
       return new CreatedResult("", result);
     }
 

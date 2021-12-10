@@ -11,6 +11,7 @@ namespace api_catalogo.config
     {
       CreateMap<CategoryNewDto, Category>();
       CreateMap<Category, CategoriesDto>().ReverseMap();
+      CreateMap<Category, DetailsCategoryDto>().ReverseMap();
 
       CreateMap<ProductNewDto, Product>();
       CreateMap<Product, ProductsDto>().ReverseMap();

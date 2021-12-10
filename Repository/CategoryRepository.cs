@@ -4,6 +4,8 @@ using api_catalogo.models;
 using api_catalogo.Repository.Interfaces;
 using api_catalogo.Context;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace api_catalogo.Repository
 {
@@ -16,10 +18,12 @@ namespace api_catalogo.Repository
       _context = context;
     }
 
-    public void add(Category category)
+    public async Task<Category> add(Category category)
     {
-      _context.Category.Add(category);
+      var result = await _context.Category.AddAsync(category);
       _context.SaveChanges();
+
+      return result.Entity;
     }
 
     public Boolean Delete(Guid id)
@@ -34,15 +38,20 @@ namespace api_catalogo.Repository
       return true;
     }
 
-    public IEnumerable<Category> GetAll()
+    public async Task<IEnumerable<Category>> GetAll()
     {
-      return _context.Category.ToList();
+      return await _context.Category.ToListAsync();
     }
 
     public void Update(Category category)
     {
       _context.Category.Update(category);
       _context.SaveChanges();
+    }
+
+    public Category DetailsCategory(Guid id)
+    {
+      return _context.Category.Include(c => c.Products).FirstOrDefault(c => c.Id == id);
     }
   }
 }

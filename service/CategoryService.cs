@@ -2,9 +2,9 @@ using System;
 using api_catalogo.models;
 using api_catalogo.Repository.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using api_catalogo.Dtos;
 using AutoMapper;
+using System.Threading.Tasks;
 
 namespace api_catalogo.service
 {
@@ -19,15 +19,16 @@ namespace api_catalogo.service
       _mapper = mapper;
     }
 
-    public IEnumerable<CategoriesDto> GetAll()
+    public async Task<IEnumerable<CategoriesDto>> GetAll()
     {
-      return _mapper.Map<IEnumerable<CategoriesDto>>(_categoryRepository.GetAll().ToList());
+      var result = await _categoryRepository.GetAll();
+      return _mapper.Map<IEnumerable<CategoriesDto>>(result);
     }
 
-    public CategoryNewDto Add(CategoryNewDto newCategory)
+    public async Task<CategoryNewDto> Add(CategoryNewDto newCategory)
     {
-      _categoryRepository.add(_mapper.Map<Category>(newCategory));
-      return newCategory;
+      var result = await _categoryRepository.add(_mapper.Map<Category>(newCategory));
+      return _mapper.Map<CategoryNewDto>(result);
     }
 
     public void Update(CategoriesDto updateCategory)
@@ -38,6 +39,12 @@ namespace api_catalogo.service
     public Boolean Delete(Guid id)
     {
       return _categoryRepository.Delete(id);
+    }
+
+    public DetailsCategoryDto DetailsCategory(Guid id)
+    {
+      var result = _categoryRepository.DetailsCategory(id);
+      return _mapper.Map<DetailsCategoryDto>(result);
     }
   }
 }

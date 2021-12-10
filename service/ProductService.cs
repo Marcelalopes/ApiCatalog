@@ -1,10 +1,10 @@
 using System;
 using api_catalogo.models;
-using System.Collections.Generic;
-using System.Linq;
-using api_catalogo.Dtos;
 using api_catalogo.Repository.Interfaces;
+using System.Collections.Generic;
+using api_catalogo.Dtos;
 using AutoMapper;
+using System.Threading.Tasks;
 
 namespace api_catalogo.service
 {
@@ -18,15 +18,16 @@ namespace api_catalogo.service
       _productRepository = productRepository;
       _mapper = mapper;
     }
-    public IEnumerable<ProductsDto> GetAll()
+    public async Task<IEnumerable<ProductsDto>> GetAll()
     {
-      return _mapper.Map<IEnumerable<ProductsDto>>(_productRepository.GetAll().ToList());
+      var result = await _productRepository.GetAll();
+      return _mapper.Map<IEnumerable<ProductsDto>>(result);
     }
 
-    public ProductNewDto Add(ProductNewDto newProduct)
+    public async Task<ProductNewDto> Add(ProductNewDto newProduct)
     {
-      _productRepository.add(_mapper.Map<Product>(newProduct));
-      return newProduct;
+      var result = await _productRepository.add(_mapper.Map<Product>(newProduct));
+      return _mapper.Map<ProductNewDto>(result);
     }
 
     public void Update(ProductsDto updateProduct)

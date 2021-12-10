@@ -1,11 +1,9 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using api_catalogo.service;
-using api_catalogo.models;
-using System;
-using api_catalogo.Context;
-using System.Collections.Generic;
 using api_catalogo.Dtos;
+using System.Threading.Tasks;
 
 namespace api_catalogo.Controllers
 {
@@ -14,22 +12,22 @@ namespace api_catalogo.Controllers
   public class CategoryController : ControllerBase
   {
     private readonly ICategoryService _categoryService;
-
     public CategoryController(ICategoryService categoryService)
     {
       _categoryService = categoryService;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<CategoriesDto>> GetAllCategory()
+    public async Task<ActionResult<IEnumerable<CategoriesDto>>> GetAllCategory()
     {
-      return new ObjectResult(_categoryService.GetAll().ToList());
+      var result = await _categoryService.GetAll();
+      return new ObjectResult(result);
     }
 
     [HttpPost]
-    public ActionResult<CategoryNewDto> AddCategory([FromBody] CategoryNewDto category)
+    public async Task<ActionResult> AddCategory([FromBody] CategoryNewDto category)
     {
-      var result = _categoryService.Add(category);
+      var result = await _categoryService.Add(category);
       return new CreatedResult("", result);
     }
 
@@ -48,6 +46,12 @@ namespace api_catalogo.Controllers
     {
       var result = _categoryService.Delete(id);
       return result ? new OkResult() : new NotFoundResult();
+    }
+
+    [HttpGet("detailsCategory/{id}:Guid")]
+    public ActionResult<DetailsCategoryDto> DetailsCategory(Guid id)
+    {
+      return new OkObjectResult(_categoryService.DetailsCategory(id));
     }
   }
 }
