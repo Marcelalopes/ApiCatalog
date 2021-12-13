@@ -48,9 +48,5 @@ namespace api_catalogo.Repository
       _context.Product.Update(product);
       _context.SaveChanges();
     }
-    public Product DetailsProduct(Guid id)
-    {
-      return _context.Product.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
-    }
   }
 }
